@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateCourseWithAssessments = exports.updateCourseWithModules = exports.DeleteModule = exports.UpdateModule = exports.CreateModule = exports.getOneModule = exports.getAllModules = exports.DeleteCourse = exports.UpdateCourse = exports.CreateCourse = exports.getCourse = exports.getCourses = void 0;
 const CourseModel_1 = __importDefault(require("../models/CourseModel"));
 const Course_1 = require("../Services/Course");
-const CourseModule_1 = __importDefault(require("../models/CourseModule"));
+const CourseModuleModel_1 = __importDefault(require("../models/CourseModuleModel"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const AsessmentModel_1 = __importDefault(require("../models/AsessmentModel"));
 const getCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -113,6 +113,7 @@ const getOneModule = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getOneModule = getOneModule;
 const CreateModule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { module } = req.body;
+    console.log(module);
     try {
         const CreatedModule = yield (0, Course_1.createModule)(module);
         if (!CreatedModule) {
@@ -158,7 +159,7 @@ const updateCourseWithModules = (req, res) => __awaiter(void 0, void 0, void 0, 
     const { id: courseId } = req.params;
     try {
         const courseObjectId = new mongoose_1.default.Types.ObjectId(courseId);
-        const modules = yield CourseModule_1.default.find({ course: courseObjectId });
+        const modules = yield CourseModuleModel_1.default.find({ course: courseObjectId });
         if (!modules || modules.length === 0) {
             return res.status(404).json({ message: 'No modules found.' });
         }

@@ -1,7 +1,7 @@
 import express,{Request, Response} from 'express'
 import CourseModel, { ICourseModel } from '../models/CourseModel'
 import { createModule, deleteCourse, deleteModule, getAllCourses, getModule, getmodules, getOneCourse, updateCourse, updateModule } from '../Services/Course'
-import CourseModule from '../models/CourseModule';
+import CourseModule from '../models/CourseModuleModel';
 import mongoose from 'mongoose';
 import { log } from 'console';
 import AsessmentModel from '../models/AsessmentModel';
@@ -116,6 +116,7 @@ export const getOneModule = async (req:Request, res:Response) => {
 
 export const CreateModule = async (req:Request, res:Response) => {
     const {module} = req.body
+    console.log(module)
     try{
         const CreatedModule = await createModule(module)
         if(!CreatedModule){
