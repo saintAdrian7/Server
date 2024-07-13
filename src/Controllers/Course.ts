@@ -3,7 +3,6 @@ import CourseModel, { ICourseModel } from '../models/CourseModel'
 import { createModule, deleteCourse, deleteModule, getAllCourses, getModule, getmodules, getOneCourse, updateCourse, updateModule } from '../Services/Course'
 import CourseModule from '../models/CourseModuleModel';
 import mongoose from 'mongoose';
-import { log } from 'console';
 import AsessmentModel from '../models/AsessmentModel';
 
 export const getCourses = async (req:Request, res:Response)=>{
@@ -222,3 +221,24 @@ export const updateCourseWithAssessments = async (req: Request, res: Response) =
         res.status(500).json({ message: 'Unable to update course with assessments at this time.', error: error.message });
     }
 };
+
+
+
+export const handleSearch =  async (req:Request, res:Response) => {
+    const query = req.query.q;
+    try {
+        const courses = await CourseModel.find({
+            $or: [
+                { title: { $regex: query, $options: 'i' } }, 
+                { description: { $regex: query, $options: 'i' } }, 
+                { 'Instructor.firstName': { $regex: query, $options: 'i' } }, 
+                { 'Instructor.lastName': { $regex: query, $options: 'i' } }, 
+            ]
+        }).populate('Instructor', 'firstName lastName'); 
+
+        res.json(courses);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+}

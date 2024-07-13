@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCourseWithAssessments = exports.updateCourseWithModules = exports.DeleteModule = exports.UpdateModule = exports.CreateModule = exports.getOneModule = exports.getAllModules = exports.DeleteCourse = exports.UpdateCourse = exports.CreateCourse = exports.getCourse = exports.getCourses = void 0;
+exports.handleSearch = exports.updateCourseWithAssessments = exports.updateCourseWithModules = exports.DeleteModule = exports.UpdateModule = exports.CreateModule = exports.getOneModule = exports.getAllModules = exports.DeleteCourse = exports.UpdateCourse = exports.CreateCourse = exports.getCourse = exports.getCourses = void 0;
 const CourseModel_1 = __importDefault(require("../models/CourseModel"));
 const Course_1 = require("../Services/Course");
 const CourseModuleModel_1 = __importDefault(require("../models/CourseModuleModel"));
@@ -197,3 +197,22 @@ const updateCourseWithAssessments = (req, res) => __awaiter(void 0, void 0, void
     }
 });
 exports.updateCourseWithAssessments = updateCourseWithAssessments;
+const handleSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = req.query.q;
+    try {
+        const courses = yield CourseModel_1.default.find({
+            $or: [
+                { title: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } },
+                { 'Instructor.firstName': { $regex: query, $options: 'i' } },
+                { 'Instructor.lastName': { $regex: query, $options: 'i' } },
+            ]
+        }).populate('Instructor', 'firstName lastName');
+        res.json(courses);
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+exports.handleSearch = handleSearch;
